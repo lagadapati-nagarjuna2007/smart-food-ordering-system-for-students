@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus Food Ordering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Sign-In SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="main-header">
+            <div class="logo-icon">
+                <i class="fas fa-wifi wifi-signal"></i>
+                <i class="fas fa-utensils cloche-icon"></i>
+            </div>
+            <h1>Smart Campus Food<br>Ordering System</h1>
+        </div>
+
+        <div class="auth-container">
+
+            <!-- ── LOGIN FORM ── -->
+            <form id="login-form" class="auth-form active-form" novalidate>
+                <h2>Student Login</h2>
+                <div id="login-alert" class="alert-box"></div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="Enter Gmail Address">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="Enter Password">
+                </div>
+                <div class="forgot-row">
+                    <a href="#" id="show-forgot">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+                <div class="divider"><span>or</span></div>
+                <p class="switch-text">
+                    Don't have an account? <a href="#" id="show-signup">Register here</a>
+                </p>
+            </form>
+
+            <!-- ── SIGNUP FORM ── -->
+            <form id="signup-form" class="auth-form" novalidate>
+                <h2>Student Registration</h2>
+                <div id="signup-alert" class="alert-box"></div>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="signup-name" placeholder="Full Name">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="signup-email" placeholder="Enter Gmail Address">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signup-password" placeholder="Create Password">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
+                </div>
+                <button type="submit" class="btn-submit">Register</button>
+                <div class="divider"><span>or</span></div>
+                <div id="google-signup-btn" class="google-btn">
+                    Sign up with Google
+                </div>
+                <p class="switch-text">
+                    Already have an account? <a href="#" id="show-login">Login here</a>
+                </p>
+            </form>
+
+            <!-- ── FORGOT PASSWORD FORM ── -->
+            <form id="forgot-form" class="auth-form" novalidate>
+                <h2>Forgot Password</h2>
+                <div id="forgot-alert" class="alert-box"></div>
+                <p class="form-subtitle">Enter your registered Gmail address. We'll send a 6-digit OTP to reset your password.</p>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="forgot-email" placeholder="Enter your Gmail Address">
+                </div>
+                <button type="submit" class="btn-submit">Send OTP</button>
+                <p class="switch-text">
+                    Remember your password? <a href="#" id="back-to-login">Back to Login</a>
+                </p>
+            </form>
+
+            <!-- ── OTP VERIFICATION FORM ── -->
+            <form id="otp-form" class="auth-form" novalidate>
+                <h2>Enter OTP</h2>
+                <div id="otp-alert" class="alert-box"></div>
+                <p class="form-subtitle" id="otp-subtitle">A 6-digit OTP was sent to your email.</p>
+                <div class="otp-boxes" id="otp-boxes">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric">
+                </div>
+                <button type="submit" class="btn-submit">Verify OTP</button>
+                <p class="switch-text">
+                    Didn't receive? <a href="#" id="resend-otp">Resend OTP</a>
+                    &nbsp;|&nbsp; <a href="#" id="back-to-forgot">Try different email</a>
+                </p>
+            </form>
+
+            <!-- ── RESET PASSWORD FORM ── -->
+            <form id="reset-form" class="auth-form" novalidate>
+                <h2>Reset Password</h2>
+                <div id="reset-alert" class="alert-box"></div>
+                <p class="form-subtitle">Create a new strong password for your account.</p>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reset-password" placeholder="New Password">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reset-confirm-password" placeholder="Confirm New Password">
+                </div>
+                <button type="submit" class="btn-submit">Reset Password</button>
+                <p class="switch-text">
+                    <a href="#" id="back-to-otp">← Back to OTP</a>
+                </p>
+            </form>
+
+            <!-- ── REGISTRATION NUMBER FORM ── -->
+            <form id="reg-number-form" class="auth-form" novalidate>
+                <div id="reg-alert" class="alert-box"></div>
+                <h2 class="reg-title">Enter Your Student Roll Number</h2>
+                <div class="input-group reg-input-group">
+                    <input type="text" id="student-reg-num" placeholder="e.g., 2023CS1234" maxlength="10">
+                </div>
+                <button type="submit" class="btn-submit btn-blue">SUBMIT</button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Hidden Google One Tap container -->
+    <div id="g_id_onload"
+         data-client_id="958415260510-g0q9hbrhgkpfomib262vop9vgj5ghq7l.apps.googleusercontent.com"
+         data-callback="handleGoogleCredential"
+         data-auto_prompt="false">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

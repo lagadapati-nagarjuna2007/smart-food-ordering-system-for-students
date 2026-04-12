@@ -1,0 +1,31 @@
+{
+  "name": "online_food",
+  "version": "1.0.0",
+  "description": "Many students go to the canteen and they have to wait in a queue sometimes it takes much time to get the food for students and also lunch break is very limited in time so to reduce it we have introducing a smart online food ordering system for students to order the food before the lunch time and we get the food on time.",
+  "main": "menu-script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.101.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "google-auth-library": "^10.6.2",
+    "nodemailer": "^8.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lagadapati-nagarjuna2007/smart-food-ordering-system-for-students.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lagadapati-nagarjuna2007/smart-food-ordering-system-for-students/issues"
+  },
+  "homepage": "https://github.com/lagadapati-nagarjuna2007/smart-food-ordering-system-for-students#readme"
+}

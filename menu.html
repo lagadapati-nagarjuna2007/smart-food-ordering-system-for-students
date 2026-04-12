@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanteenGo - Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="menu-style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo"><h2>CanteenGo</h2></div>
+        <div class="nav-actions">
+            <button class="btn-contact" id="contact-btn"><i class="fas fa-phone-alt"></i> Contact</button>
+            <span class="status-indicator"><i class="fas fa-circle"></i> Open - Lunch 12-2 PM</span>
+            <button class="btn-primary" id="cart-btn">My Order <span class="cart-count">0</span></button>
+            <button class="btn-logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <section class="hero-section">
+            <div class="hero-content">
+                <span class="tagline"><i class="fas fa-bolt"></i> For Students, By Students</span>
+                <h1>Order food,<br>skip the queue.</h1>
+                <p>Place your order before lunch break. Get a token number. Pick it up with no waiting in line.</p>
+                <div class="timer-box">
+                    <span class="timer-label">LUNCH BREAK STARTS IN</span>
+                    <div class="timer-display"><i class="fas fa-clock"></i> <span id="time">1hr 29min</span></div>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box"><h3>5 min</h3><p>Avg. wait time</p></div>
+                <div class="stat-box"><h3>24+</h3><p>Menu items</p></div>
+                <div class="stat-box"><h3>3x</h3><p>Faster pickup</p></div>
+                <div class="stat-box"><h3>&#8377;15</h3><p>Starts from</p></div>
+                <div class="stat-box"><h3>100%</h3><p>Canteen food</p></div>
+                <div class="stat-box"><h3>&#8734;</h3><p>Less queue</p></div>
+            </div>
+        </section>
+
+        <section class="controls-section">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search for idli, rice, dosa...">
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">All items</button>
+                <button class="filter-btn" data-category="Breakfast"><i class="fas fa-coffee"></i> Breakfast</button>
+                <button class="filter-btn" data-category="Lunch"><i class="fas fa-utensils"></i> Lunch</button>
+                <button class="filter-btn" data-category="Snacks"><i class="fas fa-cookie"></i> Snacks</button>
+                <button class="filter-btn" data-category="Drinks"><i class="fas fa-glass-water"></i> Drinks</button>
+                <button class="filter-btn" data-category="veg"><i class="fas fa-leaf" style="color:#4cd137"></i> Veg</button>
+                <button class="filter-btn" data-category="Non-veg"><i class="fas fa-drumstick-bite" style="color:#e84118"></i> Non-veg</button>
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <div class="section-header">
+                <h2>Today's Menu <span class="item-count" id="item-count">16 items</span></h2>
+            </div>
+            <div class="menu-grid" id="menu-grid"></div>
+        </section>
+    </main>
+
+    <!-- AI FLOATING BUTTON -->
+    <button id="ai-toggle-btn" class="ai-toggle-btn">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- AI SIDEBAR -->
+    <div class="ai-sidebar" id="ai-sidebar">
+        <div class="ai-header">
+            <h3><i class="fas fa-robot"></i> Canteen AI</h3>
+            <button id="close-ai-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-window" id="chat-window">
+            <div class="message bot-message">
+                Hey! I'm <strong>CanteenBot</strong>, powered by Claude AI.<br><br>
+                Ask me anything about the menu, prices, combos, or how to order!
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="ai-user-input" placeholder="Ask AI..." autocomplete="off">
+            <button id="ai-send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- CART MODAL -->
+    <div class="cart-modal-overlay" id="cart-modal-overlay">
+        <div class="cart-modal">
+            <div class="cart-header">
+                <h2><i class="fas fa-shopping-cart"></i> Your Order</h2>
+                <button class="close-cart" id="close-cart-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-items-container" id="cart-items-container"></div>
+            <div class="cart-total-section">
+                <span>Total</span>
+                <span class="total-price" id="cart-total-price">&#8377;0</span>
+            </div>
+            <div class="cart-footer">
+                <button class="btn-primary place-order-btn" id="place-order-btn">Place Order <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="payment-modal-overlay" id="payment-modal-overlay">
+        <div class="payment-modal">
+            <h2 class="payment-title">Payment Options</h2>
+            <div class="payment-tabs">
+                <button class="pay-tab active" data-target="card-view"><i class="fas fa-credit-card" style="color:#f39c12"></i> Card</button>
+                <button class="pay-tab" data-target="upi-view">UPI</button>
+                <button class="pay-tab" data-target="paypal-view"><i class="fab fa-paypal" style="color:#003087"></i> PayPal</button>
+            </div>
+            <div class="cod-section"><i class="fas fa-money-bill-wave" style="color:#2ecc71"></i> Cash on Delivery</div>
+            <div class="payment-body">
+                <div id="card-view" class="pay-view active">
+                    <label>Card Number</label>
+                    <div class="input-with-icon">
+                        <input type="text" placeholder="1234 5678 9012 3456">
+                        <i class="fab fa-cc-visa" style="color:#1a1f36;font-size:24px"></i>
+                    </div>
+                    <label>Card Holder Name</label>
+                    <input type="text" placeholder="Your Name">
+                    <div class="card-details-row">
+                        <div class="half-input"><label>Expiry Date</label><input type="text" placeholder="MM/YY"></div>
+                        <div class="half-input"><label>CVV</label><input type="password" placeholder="123" maxlength="3"></div>
+                    </div>
+                </div>
+                <div id="upi-view" class="pay-view">
+                    <label>UPI ID</label>
+                    <div class="upi-input-group">
+                        <input type="text" placeholder="example@bank">
+                        <button class="verify-btn">Verify</button>
+                    </div>
+                </div>
+                <div id="paypal-view" class="pay-view">
+                    <p style="color:#666;padding:20px 0;text-align:center">You will be redirected to PayPal.</p>
+                </div>
+            </div>
+            <div class="payment-footer">
+                <span class="secure-text"><i class="fas fa-lock"></i> 100% Secure</span>
+                <button class="proceed-pay-btn" id="final-pay-btn">Proceed to Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGOUT MODAL -->
+    <div class="logout-modal-overlay" id="logout-modal-overlay">
+        <div class="logout-modal">
+            <h2>Are you sure you<br>want to log out?</h2>
+            <p>Log out of CanteenGo as<br><span id="logout-email-display" style="font-weight:500">user@gmail.com</span>?</p>
+            <button class="btn-confirm-logout" id="confirm-logout-btn">Log out</button>
+            <button class="btn-cancel-logout" id="cancel-logout-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- CONTACT MODAL -->
+    <div class="contact-modal-overlay" id="contact-modal-overlay">
+        <div class="contact-modal">
+            <h2>Contact Us</h2>
+            <div class="contact-info-box">
+                <div class="contact-row">
+                    <i class="fas fa-envelope"></i>
+                    <span>lagadapati.sai2007@gmail.com</span>
+                </div>
+                <div class="contact-row">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>+91 9849165313</span>
+                </div>
+            </div>
+            <button class="btn-close-contact" id="close-contact-btn">Close</button>
+        </div>
+    </div>
+    <!-- SCRIPT AT BOTTOM SO ALL HTML ELEMENTS EXIST WHEN IT RUNS -->
+    <script src="menu-script.js"></script>
+</body>
+</html>
