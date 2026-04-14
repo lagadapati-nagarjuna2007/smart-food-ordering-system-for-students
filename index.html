@@ -141,12 +141,18 @@
     </div>
 
     <!-- Hidden Google One Tap container -->
-    <div id="g_id_onload"
-         data-client_id="958415260510-g0q9hbrhgkpfomib262vop9vgj5ghq7l.apps.googleusercontent.com"
-         data-callback="handleGoogleCredential"
-         data-auto_prompt="false">
-    </div>
-
-    <script src="script.js"></script>
+<div id="g_id_onload"
+     data-client_id=""
+     data-callback="handleGoogleCredential"
+     data-auto_prompt="false">
+</div>
+    <script src="script.js">
+        fetch('/api/config')
+        .then(res => res.json())
+        .then(config => {
+            document.getElementById('g_id_onload')
+                .setAttribute('data-client_id', config.googleClientId);
+        });
+    </script>
 </body>
 </html>
