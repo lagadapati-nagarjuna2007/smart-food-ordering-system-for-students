@@ -9,10 +9,16 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://canteengo.netlify.app',
+        'https://canteengo-admin.netlify.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true
+}));
 const PORT = process.env.PORT || 3000;
-
 // ── Supabase ──
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
@@ -29,7 +35,7 @@ const transporter = nodemailer.createTransport({
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // ── Telegram Bot ──
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 const ADMIN_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const MONTH_NAMES = ['January','February','March','April','May','June',
                      'July','August','September','October','November','December'];
@@ -559,7 +565,12 @@ app.get('/api/admin/tokens', async (req, res) => {
     if (error) return res.status(500).json({ message: 'Error fetching tokens' });
     res.json(data);
 });
-
+// ===============================
+//  client id in the index.html
+// ===============================
+app.get('/api/config', (req, res) => {
+    res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID });
+});
 // ==========================================
 // START SERVER
 // ==========================================

@@ -2,7 +2,7 @@
 // CanteenGo — Admin Panel Script
 // ============================================================
 
-const SERVER = 'http://localhost:3000';
+const SERVER = 'https://canteengo.onrender.com';
 
 // Admin credentials verified server-side
 

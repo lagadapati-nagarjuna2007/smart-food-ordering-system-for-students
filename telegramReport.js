@@ -2,9 +2,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const cron = require('node-cron');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
-
 // Enable polling so the bot can receive messages from users
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const ADMIN_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 

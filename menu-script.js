@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var contactModal = document.getElementById('contact-modal-overlay');
     var closeContactBtn = document.getElementById('close-contact-btn');
 
-    const SERVER = 'http://localhost:3000';
+    const SERVER = 'https://canteengo.onrender.com';
 
     // ==========================================
     // 1. FETCH LIVE MENU FROM DATABASE
