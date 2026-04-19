@@ -2,7 +2,7 @@
 // CanteenGo — Admin Panel Script
 // ============================================================
 
-const SERVER = 'https://canteengo.onrender.com';
+const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
 
 // Admin credentials verified server-side
 

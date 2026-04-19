@@ -28,8 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var contactModal = document.getElementById('contact-modal-overlay');
     var closeContactBtn = document.getElementById('close-contact-btn');
 
-    const SERVER = 'https://canteengo.onrender.com';
-
+ const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
     // ==========================================
     // 1. FETCH LIVE MENU FROM DATABASE
     // ==========================================

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetAlert  = document.getElementById('reset-alert');
     const regAlert    = document.getElementById('reg-alert');
 
-    const SERVER = 'https://canteengo.onrender.com';
+    const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
 
     // Tracks the email used for forgot-password flow
     let forgotEmail = '';
