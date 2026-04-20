@@ -451,5 +451,8 @@ async function startServer() {
     await seedMenuItems();
     app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 }
-
+app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
+});
 startServer();
