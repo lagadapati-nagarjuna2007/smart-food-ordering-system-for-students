@@ -11,14 +11,25 @@ const { sendMonthlyReport } = require('./telegramReport');
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'https://smart-canteengo.netlify.app'
-    ],
+    origin: function(origin, callback) {
+        const allowed = [
+            'http://localhost:3000',
+            'http://localhost:5500',       // Live Server (VS Code)
+            'http://127.0.0.1:5500',
+            'https://smart-canteengo.netlify.app',
+            'https://www.smart-canteengo.netlify.app',
+            'https://canteengo-admin.netlify.app'   // Admin panel
+        ];
+        // Allow requests with no origin (mobile apps, Postman, etc.)
+        if (!origin || allowed.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true
 }));
-
 const PORT = process.env.PORT || 3000;
 
 // ── Supabase ──
