@@ -6,7 +6,7 @@ CanteenGo is a full-stack web application that eliminates long canteen queues fo
 
 ## 🚀 Live Demo
 
-> Coming soon / Deploy link here
+https://smart-canteengo.netlify.app/
 
 ---
 
