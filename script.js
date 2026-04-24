@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
 
+    // Wake up Render server on page load (prevents cold-start delay on login)
+    fetch(SERVER + '/api/config').catch(() => {});
+
     // Tracks the email used for forgot-password flow
     let forgotEmail = '';
 
@@ -178,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showForm(regForm);
             } else {
                 email.classList.add('input-error'); password.classList.add('input-error');
-                showAlert(loginAlert, 'Server offline. Check if Node.js is running.', 'error');
+                showAlert(loginAlert, 'Server is starting up. Please try again in 30 seconds.', 'error');
             }
         }
     });

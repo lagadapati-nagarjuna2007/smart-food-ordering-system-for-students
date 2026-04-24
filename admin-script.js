@@ -4,6 +4,9 @@
 
 const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
 
+// Wake up Render server on page load (prevents cold-start delay)
+fetch(SERVER + '/api/config').catch(() => {});
+
 // Admin credentials verified server-side
 
 // State
