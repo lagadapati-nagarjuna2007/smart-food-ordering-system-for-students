@@ -6,7 +6,7 @@ const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 // Telegram bot is handled in telegramReport.js
-const { sendMonthlyReport } = require('./telegramReport');
+const { sendMonthlyReport, bot } = require('./telegramReport');
 
 const app = express();
 app.use(express.json());

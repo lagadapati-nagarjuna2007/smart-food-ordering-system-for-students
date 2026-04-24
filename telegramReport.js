@@ -2,13 +2,21 @@ const TelegramBot = require('node-telegram-bot-api');
 const cron = require('node-cron');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
-// Enable polling so the bot can receive messages from users
+// Use webhook mode WITHOUT starting a built-in web server —
+// Express in server.js handles incoming webhook requests and
+// forwards them via bot.processUpdate().
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
-    webHook: {
-        port: process.env.PORT || 3000
-    }
+    webHook: false
 });
-bot.setWebHook(`${process.env.RENDER_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`);
+
+// Register the webhook URL with Telegram (only needs to happen once,
+// but calling it on every start is harmless and keeps it up to date).
+const RENDER_URL = process.env.RENDER_URL || '';
+if (RENDER_URL) {
+    bot.setWebHook(`${RENDER_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`)
+        .then(() => console.log('✅ Telegram webhook set'))
+        .catch(err => console.error('⚠️ Failed to set webhook:', err.message));
+}
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const ADMIN_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -126,4 +134,4 @@ cron.schedule('59 23 28-31 * *', () => {
 
 console.log('🤖 Telegram bot is running — listening for messages & scheduled reports.');
 
-module.exports = { sendMonthlyReport, buildMonthlyReport };
+module.exports = { sendMonthlyReport, buildMonthlyReport, bot };
