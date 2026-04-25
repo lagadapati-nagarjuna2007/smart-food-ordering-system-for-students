@@ -515,7 +515,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             aiSend.disabled = false;
         }
-
         aiSend.addEventListener('click', sendMessage);
         aiInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') sendMessage();
