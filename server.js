@@ -244,7 +244,11 @@ app.post('/api/google-auth', async (req, res) => {
 // FORGOT PASSWORD — OTP
 // ==========================================
 
+// ── In-Memory Stores & Config ──
 const otpStore = {};
+const MAX_LOGIN_ATTEMPTS = 3;
+const LOCKOUT_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const loginAttempts = {}; // { email: { count, lockedUntil } }
 
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
@@ -304,6 +308,9 @@ app.post('/api/reset-password', async (req, res) => {
     const { error } = await supabase.from('users').update({ password }).eq('email', email);
     if (error) return res.status(500).json({ message: 'Failed to reset password.' });
     delete otpStore[email];
+    // Clear login lockout so user can log in immediately after resetting
+    const emailKey = email.trim().toLowerCase();
+    delete loginAttempts[emailKey];
     res.status(200).json({ message: 'Password reset successfully!' });
 });
 
@@ -311,10 +318,7 @@ app.post('/api/reset-password', async (req, res) => {
 // AUTH ROUTES
 // ==========================================
 
-// ── Login Attempt Limiter ──
-const MAX_LOGIN_ATTEMPTS = 3;
-const LOCKOUT_DURATION_MS = 10 * 60 * 1000; // 10 minutes
-const loginAttempts = {}; // { email: { count, lockedUntil } }
+// ── Login Endpoint ──
 
 app.post('/api/signup', async (req, res) => {
     const { name, email, password } = req.body;
