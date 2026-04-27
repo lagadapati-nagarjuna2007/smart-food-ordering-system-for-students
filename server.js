@@ -247,7 +247,7 @@ app.post('/api/google-auth', async (req, res) => {
 // ── In-Memory Stores & Config ──
 const otpStore = {};
 const MAX_LOGIN_ATTEMPTS = 3;
-const LOCKOUT_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const LOCKOUT_DURATION_MS = 3 * 60 * 1000; // 3 minutes
 const loginAttempts = {}; // { email: { count, lockedUntil } }
 
 app.post('/api/forgot-password', async (req, res) => {
