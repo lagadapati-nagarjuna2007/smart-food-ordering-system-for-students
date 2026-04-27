@@ -141,14 +141,59 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ══════════════════════════════════════════
-    // 2. LOGIN
+    // 2. LOGIN (with attempt limiter & lockout)
     // ══════════════════════════════════════════
+
+    let lockoutTimer = null; // reference to countdown interval
+
+    function startLockoutCountdown(lockedUntil) {
+        const loginBtn = loginForm.querySelector('.btn-submit');
+        const emailInput = document.getElementById('login-email');
+        const passInput  = document.getElementById('login-password');
+
+        // Disable form inputs during lockout
+        loginBtn.disabled = true;
+        emailInput.disabled = true;
+        passInput.disabled = true;
+
+        // Clear any existing timer
+        if (lockoutTimer) clearInterval(lockoutTimer);
+
+        lockoutTimer = setInterval(() => {
+            const now = Date.now();
+            const remaining = lockedUntil - now;
+
+            if (remaining <= 0) {
+                // Lockout expired — re-enable the form
+                clearInterval(lockoutTimer);
+                lockoutTimer = null;
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+                emailInput.disabled = false;
+                passInput.disabled = false;
+                passInput.value = '';
+                hideAlert(loginAlert);
+                showAlert(loginAlert, 'You can try logging in again now.', 'success');
+                return;
+            }
+
+            const mins = Math.floor(remaining / 60000);
+            const secs = Math.floor((remaining % 60000) / 1000);
+            const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            loginBtn.textContent = `🔒 Locked (${timeStr})`;
+            showAlert(loginAlert, `⛔ Account locked! Too many wrong attempts. Try again in ${timeStr}`, 'error');
+        }, 1000);
+    }
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         hideAlert(loginAlert);
 
         const email    = document.getElementById('login-email');
         const password = document.getElementById('login-password');
+
+        // If still locked out, prevent submit
+        if (lockoutTimer) return;
 
         let hasError = false;
         [email, password].forEach(input => {
@@ -168,12 +213,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email: email.value.trim(), password: password.value })
             });
             const data = await res.json();
+
             if (res.ok) {
                 localStorage.setItem('canteenUser', JSON.stringify({ email: data.email, password: password.value }));
                 showForm(regForm);
+            } else if (res.status === 429 && data.locked) {
+                // Account is locked — start countdown
+                email.classList.add('input-error');
+                password.classList.add('input-error');
+                startLockoutCountdown(data.lockedUntil);
             } else {
-                email.classList.add('input-error'); password.classList.add('input-error');
-                showAlert(loginAlert, data.message || 'Invalid email or password.', 'error');
+                // Wrong password but still has attempts
+                email.classList.add('input-error');
+                password.classList.add('input-error');
+
+                let alertMsg = data.message || 'Invalid email or password.';
+                if (data.remainingAttempts !== undefined && data.remainingAttempts > 0) {
+                    alertMsg = `⚠️ Wrong password! Only ${data.remainingAttempts} attempt${data.remainingAttempts > 1 ? 's' : ''} remaining before lockout.`;
+                }
+                showAlert(loginAlert, alertMsg, 'error');
             }
         } catch (err) {
             const saved = JSON.parse(localStorage.getItem('canteenUser'));

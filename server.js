@@ -311,6 +311,11 @@ app.post('/api/reset-password', async (req, res) => {
 // AUTH ROUTES
 // ==========================================
 
+// ── Login Attempt Limiter ──
+const MAX_LOGIN_ATTEMPTS = 3;
+const LOCKOUT_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const loginAttempts = {}; // { email: { count, lockedUntil } }
+
 app.post('/api/signup', async (req, res) => {
     const { name, email, password } = req.body;
     const { data: existing } = await supabase.from('users').select('id').eq('email', email).single();
@@ -322,9 +327,59 @@ app.post('/api/signup', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
+    const emailKey = (email || '').trim().toLowerCase();
+
+    // Initialize attempt record if not present
+    if (!loginAttempts[emailKey]) {
+        loginAttempts[emailKey] = { count: 0, lockedUntil: null };
+    }
+    const record = loginAttempts[emailKey];
+
+    // Check if account is currently locked out
+    if (record.lockedUntil && Date.now() < record.lockedUntil) {
+        const remainingMs = record.lockedUntil - Date.now();
+        const remainingMinutes = Math.ceil(remainingMs / 60000);
+        return res.status(429).json({
+            message: `Too many failed attempts. Try again after ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}.`,
+            locked: true,
+            lockedUntil: record.lockedUntil,
+            remainingAttempts: 0
+        });
+    }
+
+    // If lockout has expired, reset
+    if (record.lockedUntil && Date.now() >= record.lockedUntil) {
+        record.count = 0;
+        record.lockedUntil = null;
+    }
+
     const { data: user, error } = await supabase.from('users').select('*').eq('email', email).single();
-    if (error || !user || user.password !== password)
-        return res.status(401).json({ message: 'Invalid email or password!' });
+
+    if (error || !user || user.password !== password) {
+        // Wrong credentials — increment attempt counter
+        record.count += 1;
+        const attemptsLeft = MAX_LOGIN_ATTEMPTS - record.count;
+
+        if (attemptsLeft <= 0) {
+            // Lock the account
+            record.lockedUntil = Date.now() + LOCKOUT_DURATION_MS;
+            return res.status(429).json({
+                message: 'Account locked! Too many wrong attempts. Try again after 10 minutes.',
+                locked: true,
+                lockedUntil: record.lockedUntil,
+                remainingAttempts: 0
+            });
+        }
+
+        return res.status(401).json({
+            message: `Invalid email or password! ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining.`,
+            locked: false,
+            remainingAttempts: attemptsLeft
+        });
+    }
+
+    // Successful login — clear attempts
+    delete loginAttempts[emailKey];
     res.status(200).json({ message: 'Login successful!', email: user.email });
 });
 
