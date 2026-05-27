@@ -146,13 +146,18 @@
      data-callback="handleGoogleCredential"
      data-auto_prompt="false">
 </div>
-    <script src="script.js">
-        fetch('/api/config')
-        .then(res => res.json())
-        .then(config => {
-            document.getElementById('g_id_onload')
-                .setAttribute('data-client_id', config.googleClientId);
-        });
+    <script src="script.js"></script>
+    <script>
+        fetch('https://smart-food-ordering-system-for-students.onrender.com/api/config')
+            .then(res => res.json())
+            .then(config => {
+                document.getElementById('g_id_onload')
+                    .setAttribute('data-client-id', config.googleClientId);
+                google.accounts.id.initialize({
+                    client_id: config.googleClientId,
+                    callback: window.handleGoogleCredential
+                });
+            });
     </script>
 </body>
 </html>
