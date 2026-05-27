@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetAlert  = document.getElementById('reset-alert');
     const regAlert    = document.getElementById('reg-alert');
 
-    const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
+    const SERVER = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000'
+        : 'https://smart-food-ordering-system-for-students.onrender.com';
 
     // Wake up Render server on page load (prevents cold-start delay on login)
     fetch(SERVER + '/api/config').catch(() => {});
@@ -449,19 +451,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    function triggerGoogleSignIn() {
-        if (typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.initialize({
-                client_id: document.getElementById('g_id_onload').dataset.clientId,
-                callback: window.handleGoogleCredential
-            });
-            google.accounts.id.prompt();
-        } else {
-            alert('Google Sign-In is not loaded yet. Please try again in a moment.');
+    // Initialize Google Sign-In programmatically
+    async function initGoogleSignIn() {
+        try {
+            const res = await fetch(SERVER + '/api/config');
+            if (!res.ok) throw new Error('Failed to fetch Google config');
+            const config = await res.json();
+
+            if (config.googleClientId && typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: config.googleClientId,
+                    callback: window.handleGoogleCredential
+                });
+
+                const signupBtn = document.getElementById('google-signup-btn');
+                if (signupBtn) {
+                    signupBtn.classList.remove('google-btn'); // Remove local styling so the iframe renders cleanly
+                    google.accounts.id.renderButton(signupBtn, {
+                        theme: 'outline',
+                        size: 'large',
+                        width: 360,
+                        text: 'signup_with',
+                        shape: 'rectangular'
+                    });
+                }
+
+                const loginBtn = document.getElementById('google-login-btn');
+                if (loginBtn) {
+                    loginBtn.classList.remove('google-btn'); // Remove local styling so the iframe renders cleanly
+                    google.accounts.id.renderButton(loginBtn, {
+                        theme: 'outline',
+                        size: 'large',
+                        width: 360,
+                        text: 'signin_with',
+                        shape: 'rectangular'
+                    });
+                }
+            }
+        } catch (err) {
+            console.error('Google Sign-In initialization failed:', err);
         }
     }
 
-    document.getElementById('google-login-btn').addEventListener('click',  triggerGoogleSignIn);
-    document.getElementById('google-signup-btn').addEventListener('click', triggerGoogleSignIn);
+    // Call Google Sign-In initialization
+    initGoogleSignIn();
 
 });
