@@ -513,7 +513,10 @@ app.get('/api/admin/tokens', async (req, res) => {
     if (error) return res.status(500).json({ message: 'Error fetching tokens' });
     res.json(data);
 });
-
+app.get('/ping', async (req, res) => {
+  await supabase.from('menu_items').select('id').limit(1);
+  res.send('pong');
+});
 // ==========================================
 // START SERVER
 // ==========================================
