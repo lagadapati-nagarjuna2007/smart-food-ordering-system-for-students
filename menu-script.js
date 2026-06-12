@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var contactModal = document.getElementById('contact-modal-overlay');
     var closeContactBtn = document.getElementById('close-contact-btn');
 
- const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
+ const SERVER = "https://smart-food-ordering-system-for-students-sm2n.onrender.com";
     // ==========================================
     // 1. FETCH LIVE MENU FROM DATABASE
     // ==========================================

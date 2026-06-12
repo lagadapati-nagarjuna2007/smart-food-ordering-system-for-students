@@ -2,7 +2,7 @@
 // CanteenGo — Admin Panel Script
 // ============================================================
 
-const SERVER = "https://smart-food-ordering-system-for-students.onrender.com";
+const SERVER = "https://smart-food-ordering-system-for-students-sm2n.onrender.com";
 
 // Wake up Render server on page load (prevents cold-start delay)
 fetch(SERVER + '/api/config').catch(() => {});

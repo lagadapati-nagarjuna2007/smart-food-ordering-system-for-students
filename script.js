@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SERVER = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:3000'
-        : 'https://smart-food-ordering-system-for-students.onrender.com';
+        : 'https://smart-food-ordering-system-for-students-sm2n.onrender.com';
 
     // Wake up Render server on page load (prevents cold-start delay on login)
     fetch(SERVER + '/api/config').catch(() => {});
