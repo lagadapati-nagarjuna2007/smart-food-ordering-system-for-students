@@ -2,8 +2,8 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 9 */5 * *'  # every 5 days at 9:00 AM UTC
-  workflow_dispatch:         # allows manual trigger from GitHub UI
+    - cron: '0 9 */5 * *'
+  workflow_dispatch:
 
 jobs:
   ping:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install @supabase/supabase-js
@@ -28,8 +28,25 @@ jobs:
         run: |
           node -e "
             const { createClient } = require('@supabase/supabase-js');
-            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-            supabase.from('orders').select('id').limit(1)
-              .then(() => { console.log('✅ Supabase is alive!'); process.exit(0); })
-              .catch(err => { console.error('❌ Ping failed:', err.message); process.exit(1); });
+
+            const supabase = createClient(
+              process.env.SUPABASE_URL,
+              process.env.SUPABASE_KEY
+            );
+
+            async function ping() {
+              const { error } = await supabase
+                .from('orders')
+                .select('id')
+                .limit(1);
+
+              if (error) {
+                console.error('❌ Ping failed:', error.message);
+                process.exit(1);
+              }
+
+              console.log('✅ Supabase is alive!');
+            }
+
+            ping();
           "
