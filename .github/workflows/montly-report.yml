@@ -2,8 +2,8 @@ name: CanteenGo Monthly Report
 
 on:
   schedule:
-    - cron: '0 9 1 * *'  # 1st of every month at 9:00 AM UTC
-  workflow_dispatch:       # allows manual trigger from GitHub UI
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
 
 jobs:
   send-report:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install @supabase/supabase-js dotenv
